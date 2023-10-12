@@ -7,3 +7,6 @@
 % 
 % % Create an ABB GoFa 5 model
 % GoFa = ABBGoFa();
+
+
+tesy = PlaceObject('ABB5Link2.ply', [0,0,0]);
