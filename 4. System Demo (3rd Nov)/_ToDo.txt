@@ -1,11 +1,8 @@
 System Demonstration (group task with the final Spark+ used to distribute these marks): 15/35
-Demonstration of the new robot with an existing robot completing a specified task during an online (in class time) 
-group presentation (10-15 minutes per group): Path plan between several poses and the final joint state given a 
-unique and safe environment (developed by each group) and the simulated model. Use RMRC, collision avoidance 
-and a GUI where appropriate. Creatively use a real robot that mimics and/or enhances the simulation and 
-application.
-10
-Safety in Demo: 
+
+Demonstration of the new robot with an existing robot completing a specified task during an online (in class time) group presentation (10-15 minutes per group): Path plan between several poses and the final joint state given a  unique and safe environment (developed by each group) and the simulated model. Use RMRC, collision avoidance and a GUI where appropriate. Creatively use a real robot that mimics and/or enhances the simulation and application. (10)
+
+Safety in Demo: (5)
 (a) System reacts to user emergency stop action (1) GUI e-stop; (1) Hardware e-stop. (Minus marks if no e-stop).
 (b) Trajectory reacts to simulated sensor input (e.g. light curtain) (1)
 (c) Trajectory reacts to a forced simulated upcoming collision (1)
