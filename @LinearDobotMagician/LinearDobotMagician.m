@@ -10,7 +10,7 @@ classdef LinearDobotMagician < RobotBaseClass
 
     properties(Access = public)   
         plyFileNameStem = 'LinearDobotMagician';
-
+        
         %> defaultRealQ 
         %defaultRealQ  = [0,pi/4,pi/4,0,0];
     end
@@ -18,11 +18,11 @@ classdef LinearDobotMagician < RobotBaseClass
     methods (Access = public) 
 %% Constructor 
 function self = LinearDobotMagician(baseTr)
-			self.CreateModel();
+            self.CreateModel();
              if nargin < 1			
 				baseTr = eye(4);				
             end
-            self.model.base = self.model.base.T * transl(0,0,0.07)* baseTr ;
+           self.model.base = self.model.base.T * transl(0,0,0)* baseTr ;
    
 %             if nargin == 1			
 % 				self.model.base = self.model.base.T * baseTr;
@@ -47,52 +47,52 @@ function self = LinearDobotMagician(baseTr)
         end   
     end
     
-%     methods(Hidden)
-% %% TestMoveJoints
-%         % Overriding the RobotBaseClass function, since it won't work properly
-%         % for this robot
-%         function TestMoveJoints(self)
-%             self.TestMoveDobotMagician();
-%         end
-% 
-% %% Test Move DobotMagician
-%     function TestMoveDobotMagician(self)
-%             qPath = jtraj(self.model.qlim(:,1)',self.model.qlim(:,2)',50);                       
-%             for i = 1:50                
-%                 self.model.animate(self.RealQToModelQ(qPath(i,:)));
-% %                 hold on;
-% %                 trplot(self.model.fkine(self.RealQToModelQ(qPath(i,:))));
-%                 pause(0.2);
-%             end
-%         end
-%     end
-% 
-%     methods(Static)
-% %% RealQToModelQ
-%         % Convert the real Q to the model Q
-%         function modelQ = RealQToModelQ(realQ)
-%             modelQ = realQ;
-%             modelQ(3) = DobotMagician.ComputeModelQ3GivenRealQ2and3( realQ(2), realQ(3) );
-%             modelQ(4) = pi - realQ(2) - modelQ(3);    
-%         end
-%         
-% %% ModelQ3GivenRealQ2and3
-%         % Convert the real Q2 & Q3 into the model Q3
-%         function modelQ3 = ComputeModelQ3GivenRealQ2and3(realQ2,realQ3)
-%             modelQ3 = pi/2 - realQ2 + realQ3;
-%         end
-%         
-% %% ModelQToRealQ
-%         % Convert the model Q to the real Q
-%         function realQ = ModelQToRealQ( modelQ )
-%             realQ = modelQ;
-%             realQ(3) = DobotMagician.ComputeRealQ3GivenModelQ2and3( modelQ(2), modelQ(3) );
-%         end
-%         
-% %% RealQ3GivenModelQ2and3
-%         % Convert the model Q2 & Q3 into the real Q3
-%         function realQ3 = ComputeRealQ3GivenModelQ2and3( modelQ2, modelQ3 )
-%             realQ3 = modelQ3 - pi/2 + modelQ2;
-%         end
-%     end
+    methods(Hidden)
+%% TestMoveJoints
+        % Overriding the RobotBaseClass function, since it won't work properly
+        % for this robot
+        function TestMoveJoints(self)
+            self.TestMoveDobotMagician();
+        end
+
+%% Test Move DobotMagician
+    function TestMoveDobotMagician(self)
+            qPath = jtraj(self.model.qlim(:,1)',self.model.qlim(:,2)',50);                       
+            for i = 1:50                
+                self.model.animate(self.RealQToModelQ(qPath(i,:)));
+%                 hold on;
+%                 trplot(self.model.fkine(self.RealQToModelQ(qPath(i,:))));
+                pause(0.2);
+            end
+        end
+    end
+
+    methods(Static)
+%% RealQToModelQ
+        % Convert the real Q to the model Q
+        function modelQ = RealQToModelQ(realQ)
+            modelQ = realQ;
+            modelQ(3) = DobotMagician.ComputeModelQ3GivenRealQ2and3( realQ(2), realQ(3) );
+            modelQ(4) = pi - realQ(2) - modelQ(3);    
+        end
+        
+%% ModelQ3GivenRealQ2and3
+        % Convert the real Q2 & Q3 into the model Q3
+        function modelQ3 = ComputeModelQ3GivenRealQ2and3(realQ2,realQ3)
+            modelQ3 = pi/2 - realQ2 + realQ3;
+        end
+        
+%% ModelQToRealQ
+        % Convert the model Q to the real Q
+        function realQ = ModelQToRealQ( modelQ )
+            realQ = modelQ;
+            realQ(3) = DobotMagician.ComputeRealQ3GivenModelQ2and3( modelQ(2), modelQ(3) );
+        end
+        
+%% RealQ3GivenModelQ2and3
+        % Convert the model Q2 & Q3 into the real Q3
+        function realQ3 = ComputeRealQ3GivenModelQ2and3( modelQ2, modelQ3 )
+            realQ3 = modelQ3 - pi/2 + modelQ2;
+        end
+    end
 end
