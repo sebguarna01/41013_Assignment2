@@ -12,20 +12,23 @@ hold on;
 % Create an ABB IRB 120 model
 robot = ABBIRB1200();
 
+dobot = LinearDobotMagician();
+
 disp('Press ENTER to Start');
 % pause;
 
 % Define a list of joint configurations (poses) to move to
 poses = [
-    0, pi/4, pi/4, pi/2, 0, 0; % start pose
+    0, 0, 0, 0, 0, 0; % start pose
 
-    0, pi/4, pi/4, pi/2, 0, 0;
-    0, pi/6, pi/4, pi/2, 0, 0;
+    0, pi/4, pi/4, 0, 0, 0;
+    0, pi/6, pi/4, 0, 0, 0;
 
-    pi/2, pi/4, pi/4, pi/2, 0, 0;
-    pi/2, pi/6, pi/2, pi/2, 0, 0;
-    -pi/2, pi/4, pi/2, pi/2, 0, 0;
-    -pi/2, pi/6, pi/4, pi/2, 0, 0;
+    pi/2, pi/4, pi/4, 0, 0, 0;
+    pi/2, pi/2, 0, 0, 0, 0;
+
+    -pi/2, pi/4, pi/4, 0, 0, 0;
+    -pi/2, pi/6, pi/4, 0, 0, 0;
 ];
 
 % Loop through each pose

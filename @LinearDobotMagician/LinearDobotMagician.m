@@ -22,7 +22,7 @@ function self = LinearDobotMagician(baseTr)
              if nargin < 1			
 				baseTr = eye(4);				
             end
-           self.model.base = self.model.base.T * transl(0,0,0)* baseTr ;
+           self.model.base = self.model.base.T * transl(0.8,-0.4,0)* baseTr ;
    
 %             if nargin == 1			
 % 				self.model.base = self.model.base.T * baseTr;
