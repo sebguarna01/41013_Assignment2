@@ -18,33 +18,93 @@ disp('Press ENTER to Start');
 % pause;
 
 % Define a list of joint configurations (poses) to move to
-poses = [
+targetJointPoses = [
     0, 0, 0, 0, 0, 0; % start pose
 
     0, pi/4, pi/4, 0, 0, 0;
+    0, pi/4, 0, 0, -pi/4, 0;
     0, pi/6, pi/4, 0, 0, 0;
 
     pi/2, pi/4, pi/4, 0, 0, 0;
-    pi/2, pi/2, 0, 0, 0, 0;
+    pi/2, pi/4, 0, 0, -pi/4, 0;
+    pi/2, pi/4, 0, 0, -pi/2, 0;
+    pi/2, pi/4, pi/4, 0, -pi/2, 0;
 
     -pi/2, pi/4, pi/4, 0, 0, 0;
     -pi/2, pi/6, pi/4, 0, 0, 0;
 ];
 
-% Loop through each pose
-for i = 1:size(poses, 1)
-    % Get the current pose
-    currentPose = poses(i, :);
+% % Loop through each pose
+% for i = 1:size(poses, 1)
+%     % Get the current pose
+%     currentPose = poses(i, :);
+% 
+%     % Move the robot to the current pose
+%     robot.model.animate(currentPose);
+% 
+%     % Pause to observe the transformation
+%     pause(2); % You can adjust the pause duration as needed
+% 
+%     % Display the transformation matrix of the end effector
+%     disp(['Transformation Matrix for Pose ', num2str(i), ':']);
+%     disp(robot.model.fkine(currentPose).T);
+% end
 
-    % Move the robot to the current pose
-    robot.model.animate(currentPose);
+% Initialize the trajectory with the first pose
+trajectory = targetJointPoses(1, :);
 
-    % Pause to observe the transformation
-    pause(2); % You can adjust the pause duration as needed
+numSteps = 50;
 
-    % Display the transformation matrix of the end effector
+% Initialize an empty cell array to store the trajectory
+fullTrajectory = cell(1, 0);
+
+% Generate trajectory for each pair of consecutive poses
+for i = 1:size(targetJointPoses, 1) - 1
+    startPose = targetJointPoses(i, :);
+    endPose = targetJointPoses(i + 1, :);
+
+    % Interpolate poses to create a smooth trajectory segment
+    segmentTrajectory = interpolatePoses(startPose, endPose, numSteps);
+
+    % % Concatenate the segment trajectory to the full trajectory
+    % fullTrajectory = [fullTrajectory, segmentTrajectory];
+
+    % Move the robot along the complete trajectory
+    moveDobot(robot, segmentTrajectory, numSteps);
+
     disp(['Transformation Matrix for Pose ', num2str(i), ':']);
-    disp(robot.model.fkine(currentPose).T);
+    disp(robot.model.fkine(endPose).T);
+
+    startPose = targetJointPoses(i+1);
+
+    pause(2);
+end
+
+disp(['DONE']);
+
+function moveDobot(robot, trajectory, numSteps)
+    % Move the Dobot Magician robot along a given trajectory
+    for i = 1:numSteps
+        % Calculate the end-effector transformation using forward kinematics
+        endEffectorPose = robot.model.fkine(trajectory{i});
+
+        % Solve joint angles using inverse kinematics
+        qSol = robot.model.ikine(endEffectorPose, 'q0', zeros(1, 6), 'mask', [1 1 1 1 1 1]);
+
+        robot.model.animate(qSol); % Animate the robot's motion
+        drawnow;
+    end
+end
+
+function trajectory = interpolatePoses(startPose, endPose, numSteps)
+    % Interpolate between two joint configurations to generate a trajectory
+    trajectory = cell(1, numSteps);
+    for i = 1:numSteps
+        t = (i - 1) / (numSteps - 1);
+        % Linear interpolation between start and end joint configurations
+        interpolatedPose = (1 - t) * startPose + t * endPose;
+        trajectory{i} = interpolatedPose;
+    end
 end
 
 % % Define DH parameters of the ABB IRB 120
