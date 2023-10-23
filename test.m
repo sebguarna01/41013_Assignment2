@@ -5,12 +5,16 @@
 % 
 % hold on;
 % 
-
-bottle = PlaceObject('bottle.ply', [0,.5,0]);
+workspace = PlaceObject(['bar.ply'], [0,0,0]);
 hold on;
+
+bottle = PlaceObject('bottle.ply', [0,0.5,0.5]);
+
 
 % Create an ABB IRB 120 model
 robot = ABBIRB1200();
+
+robot.model.base = robot.model.base.T * transl(0,0,0.5);
 
 dobot = LinearDobotMagician();
 
