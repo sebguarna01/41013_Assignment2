@@ -5,11 +5,23 @@
 % 
 % hold on;
 % 
-workspace = PlaceObject(['bar.ply'], [0,0,0]);
+
+%define steps for movement of the robot
+steps = 100;
+
+%set up the workspace size
+axis equal
+axis([-1 2 -2 2 0 2])
 hold on;
 
-bottle = PlaceObject('bottle.ply', [0,0.5,0.5]);
+%initialise LinearUR3 robot as variable r
+display('Initialising...');
+workspace = PlaceObject(['bar.ply'], [0,0,0]);
 
+gin = PlaceObject('greenbottle.ply', [0,0.5,0.5]);
+vodka = PlaceObject('vodkabottle.ply', [-0.1,0.5,0.5]);
+rum = PlaceObject('rumbottle.ply', [-0.2,0.5,0.5]);
+whiskey = PlaceObject('greenbottle.ply', [-0.3,0.5,0.5]);
 
 % Create an ABB IRB 120 model
 robot = ABBIRB1200();
@@ -22,21 +34,21 @@ disp('Press ENTER to Start');
 % pause;
 
 % Define a list of joint configurations (poses) to move to
-targetJointPoses = [
-    0, 0, 0, 0, 0, 0; % start pose
-
-    0, pi/4, pi/4, 0, 0, 0;
-    0, pi/4, 0, 0, -pi/4, 0;
-    0, pi/6, pi/4, 0, 0, 0;
-
-    pi/2, pi/4, pi/4, 0, 0, 0;
-    pi/2, pi/4, 0, 0, -pi/4, 0;
-    pi/2, pi/4, 0, 0, -pi/2, 0;
-    pi/2, pi/4, pi/4, 0, -pi/2, 0;
-
-    -pi/2, pi/4, pi/4, 0, 0, 0;
-    -pi/2, pi/6, pi/4, 0, 0, 0;
-];
+% targetJointPoses = [
+%     0, 0, 0, 0, 0, 0; % start pose
+% 
+%     0, pi/4, pi/4, 0, 0, 0;
+%     0, pi/4, 0, 0, -pi/4, 0;
+%     0, pi/6, pi/4, 0, 0, 0;
+% 
+%     pi/2, pi/4, pi/4, 0, 0, 0;
+%     pi/2, pi/4, 0, 0, -pi/4, 0;
+%     pi/2, pi/4, 0, 0, -pi/2, 0;
+%     pi/2, pi/4, pi/4, 0, -pi/2, 0;
+% 
+%     -pi/2, pi/4, pi/4, 0, 0, 0;
+%     -pi/2, pi/6, pi/4, 0, 0, 0;
+% ];
 
 % % Loop through each pose
 % for i = 1:size(poses, 1)
