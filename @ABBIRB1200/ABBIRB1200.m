@@ -9,7 +9,7 @@ classdef ABBIRB1200 < RobotBaseClass
         function self = ABBIRB1200(baseTr)
 			self.CreateModel();
             if nargin == 1			
-				self.model.base = self.model.base.T * transl(0.8,-0.4,0.5) * baseTr ;
+				self.model.base = self.model.base.T * baseTr ;
             end            
 
             % Overiding the default workspace for this small robot

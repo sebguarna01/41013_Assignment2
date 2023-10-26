@@ -15,13 +15,19 @@ axis([-1 2 -2 2 0 2])
 hold on;
 
 %initialise LinearUR3 robot as variable r
-display('Initialising...');
+disp('Initialising...');
 workspace = PlaceObject(['bar.ply'], [0,0,0]);
 
 gin = PlaceObject('greenbottle.ply', [0,0.5,0.5]);
 vodka = PlaceObject('vodkabottle.ply', [-0.1,0.5,0.5]);
 rum = PlaceObject('rumbottle.ply', [-0.2,0.5,0.5]);
 whiskey = PlaceObject('greenbottle.ply', [-0.3,0.5,0.5]);
+
+% add mixers 1 - 4
+% coke = PlaceObject('???.ply', [0,-0.5,0.5]);
+% lemonade? = PlaceObject('???.ply', [-0.1,-0.5,0.5]);
+% orangeJuice = PlaceObject('???.ply', [-0.2,-0.5,0.5]);
+% number4 = PlaceObject('???.ply', [-0.3,-0.5,0.5]);
 
 % Create an ABB IRB 120 model
 robot = ABBIRB1200();
@@ -31,24 +37,24 @@ robot.model.base = robot.model.base.T * transl(0,0,0.5);
 dobot = LinearDobotMagician();
 
 disp('Press ENTER to Start');
-% pause;
+pause;
 
 % Define a list of joint configurations (poses) to move to
-% targetJointPoses = [
-%     0, 0, 0, 0, 0, 0; % start pose
-% 
-%     0, pi/4, pi/4, 0, 0, 0;
-%     0, pi/4, 0, 0, -pi/4, 0;
-%     0, pi/6, pi/4, 0, 0, 0;
-% 
-%     pi/2, pi/4, pi/4, 0, 0, 0;
-%     pi/2, pi/4, 0, 0, -pi/4, 0;
-%     pi/2, pi/4, 0, 0, -pi/2, 0;
-%     pi/2, pi/4, pi/4, 0, -pi/2, 0;
-% 
-%     -pi/2, pi/4, pi/4, 0, 0, 0;
-%     -pi/2, pi/6, pi/4, 0, 0, 0;
-% ];
+targetJointPoses = [
+    0, 0, 0, 0, 0, 0; % start pose
+
+    0, pi/4, pi/4, 0, 0, 0;
+    0, pi/4, 0, 0, -pi/4, 0;
+    0, pi/6, pi/4, 0, 0, 0;
+
+    pi/2, pi/4, pi/4, 0, 0, 0;
+    pi/2, pi/4, 0, 0, -pi/4, 0;
+    pi/2, pi/4, 0, 0, -pi/2, 0;
+    pi/2, pi/4, pi/4, 0, -pi/2, 0;
+
+    -pi/2, pi/4, pi/4, 0, 0, 0;
+    -pi/2, pi/6, pi/4, 0, 0, 0;
+];
 
 % % Loop through each pose
 % for i = 1:size(poses, 1)
@@ -65,6 +71,13 @@ disp('Press ENTER to Start');
 %     disp(['Transformation Matrix for Pose ', num2str(i), ':']);
 %     disp(robot.model.fkine(currentPose).T);
 % end
+
+% testing Catesian stuff
+% targetJointPoses = [
+%     transl(0.5, 0, 0.9) * rpy2tr(180, -90, 0, 'deg');
+%     transl(0,0.5,0.5) * rpy2tr(180, -90, 0, 'deg');
+%     transl(-0.1, 0.4, 0.9) * rpy2tr(180, -90, 0, 'deg');
+%     ];
 
 % Initialize the trajectory with the first pose
 trajectory = targetJointPoses(1, :);
@@ -88,8 +101,8 @@ for i = 1:size(targetJointPoses, 1) - 1
     % Move the robot along the complete trajectory
     moveDobot(robot, segmentTrajectory, numSteps);
 
-    disp(['Transformation Matrix for Pose ', num2str(i), ':']);
-    disp(robot.model.fkine(endPose).T);
+    % disp(['Transformation Matrix for Pose ', num2str(i), ':']);
+    % disp(robot.model.fkine(endPose).T);
 
     startPose = targetJointPoses(i+1);
 
@@ -107,6 +120,17 @@ function moveDobot(robot, trajectory, numSteps)
         % Solve joint angles using inverse kinematics
         qSol = robot.model.ikine(endEffectorPose, 'q0', zeros(1, 6), 'mask', [1 1 1 1 1 1]);
 
+        robot.model.animate(qSol); % Animate the robot's motion
+        drawnow;
+    end
+end
+
+function moveIRB1200(robot, trajectory, numSteps)
+    % Move the UR3 robot along a given trajectory
+    for i = 1:numSteps
+        % Solve joint angles using inverse kinematics
+        qSol = robot.model.ikine(trajectory{i}, 'q0', zeros(1, 6));
+        
         robot.model.animate(qSol); % Animate the robot's motion
         drawnow;
     end
