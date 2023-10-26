@@ -34,7 +34,7 @@ robot = ABBIRB1200();
 
 robot.model.base = robot.model.base.T * transl(0,0,0.5);
 
-dobot = LinearDobotMagician();
+% dobot = LinearDobotMagician();
 
 disp('Press ENTER to Start');
 pause;
@@ -42,15 +42,12 @@ pause;
 % Define a list of joint configurations (poses) to move to
 targetJointPoses = [
     0, 0, 0, 0, 0, 0; % start pose
-
-    0, pi/4, pi/4, 0, 0, 0;
-    0, pi/4, 0, 0, -pi/4, 0;
-    0, pi/6, pi/4, 0, 0, 0;
-
-    pi/2, pi/4, pi/4, 0, 0, 0;
+    0, 0, 0, 0, 0, 0;
+    
     pi/2, pi/4, 0, 0, -pi/4, 0;
-    pi/2, pi/4, 0, 0, -pi/2, 0;
     pi/2, pi/4, pi/4, 0, -pi/2, 0;
+    pi/2, pi/3, 0.51, pi/8, -pi/2, 0;
+    pi/2, pi/3, pi/7, pi/8, -pi/2, 0;
 
     -pi/2, pi/4, pi/4, 0, 0, 0;
     -pi/2, pi/6, pi/4, 0, 0, 0;
@@ -95,18 +92,13 @@ for i = 1:size(targetJointPoses, 1) - 1
     % Interpolate poses to create a smooth trajectory segment
     segmentTrajectory = interpolatePoses(startPose, endPose, numSteps);
 
-    % % Concatenate the segment trajectory to the full trajectory
-    % fullTrajectory = [fullTrajectory, segmentTrajectory];
-
     % Move the robot along the complete trajectory
     moveDobot(robot, segmentTrajectory, numSteps);
 
-    % disp(['Transformation Matrix for Pose ', num2str(i), ':']);
-    % disp(robot.model.fkine(endPose).T);
+    disp(['Transformation Matrix for Pose ', num2str(i), ':']);
+    disp(robot.model.fkine(endPose).T);
 
     startPose = targetJointPoses(i+1);
-
-    pause(2);
 end
 
 disp(['DONE']);

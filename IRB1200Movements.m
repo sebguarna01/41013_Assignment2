@@ -23,66 +23,73 @@ whiskey = PlaceObject('greenbottle.ply', [-0.3,0.5,0.5]);
 % number4 = PlaceObject('???.ply', [-0.3,-0.5,0.5]);
 
 % Create an ABB IRB 120 model
-robot = ABBIRB1200();
+IRB1200 = ABBIRB1200();
 
-robot.model.base = robot.model.base.T * transl(0,0,0.5);
-robot.model.animate(zeros(1, 6));
+IRB1200.model.base = IRB1200.model.base.T * transl(0,0,0.5);
+IRB1200.model.animate(zeros(1, 6));
 drawnow;
 
-dobot = LinearDobotMagician();
+% dobot = LinearDobotMagician();
 
 disp('Press ENTER to Start');
 pause;
 
 % Define a list of Cartesian poses to move to
-% targetJointPoses = [
-%     transl(0.5, 0, 0.9) * rpy2tr(180, -90, 0, 'deg');
-%     transl(0,0.5,0.5) * rpy2tr(180, -90, 0, 'deg');
-%     transl(-0.1, 0.4, 0.9) * rpy2tr(180, -90, 0, 'deg');
-%     ];
+% posesDrink1 = {
+%     transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'deg');
+%     transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'deg');
+%     transl(0,0.45,0.6) * rpy2tr(0, 0, 0, 'deg');
+%     transl(0,0.45,0.6) * rpy2tr(0, 0, 0, 'deg');
+%     transl(0,0.45,0.6) * rpy2tr(0, 0, 0, 'deg');
+%     transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'deg');
+%     };
+posesDrink1 = {
+    transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'zyx');
+    transl(0.6, 0, 1) * rpy2tr(0, 0, 0, 'zyx');
+    transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'zyx');
+    transl(0,0.45,0.55) * rpy2tr(0, 0, 0, 'zyx');
+    % transl(0,0.45,0.6) * rpy2tr(0, 0, 0, 'zyx');
+    transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'zyx');
+    };
 
-% Initialize the trajectory with the first pose
-trajectory = targetJointPoses(1, :);
+initial_pose = transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'deg');
 
-numSteps = 50;
+num_steps = 10;
 
-% Initialize an empty cell array to store the trajectory
-fullTrajectory = cell(1, 0);
+for i = 1:(length(posesDrink1) - 1)
+        trajectory = interpolatePoses(initial_pose, posesDrink1{i+1}, num_steps);
+        moveIRB1200(IRB1200, trajectory, num_steps);
+        initial_pose = posesDrink1{i+1}; % Update the initial pose for the next step
 
-% Generate trajectory for each pair of consecutive poses
-for i = 1:size(targetJointPoses, 1) - 1
-    startPose = targetJointPoses(i, :);
-    endPose = targetJointPoses(i + 1, :);
-
-    % Interpolate poses to create a smooth trajectory segment
-    segmentTrajectory = interpolatePoses(startPose, endPose, numSteps);
-
-    % % Concatenate the segment trajectory to the full trajectory
-    % fullTrajectory = [fullTrajectory, segmentTrajectory];
-
-    % Move the robot along the complete trajectory
-    moveDobot(robot, segmentTrajectory, numSteps);
-
-    % disp(['Transformation Matrix for Pose ', num2str(i), ':']);
-    % disp(robot.model.fkine(endPose).T);
-
-    startPose = targetJointPoses(i+1);
-
-    pause(2);
+        % Display joint values
+        disp(['Joint angles at pose ', num2str(i), ':']);
 end
 
 disp(['DONE']);
 
+% function moveIRB1200(robot, trajectory, numSteps)
+%     % Move the UR3 robot along a given trajectory
+%     for i = 1:numSteps
+%         % Solve joint angles using inverse kinematics
+%         qSol = robot.model.ikine(trajectory{i}, 'q0', zeros(1, 6), 'mask', [1 1 1 0 0 0]);
+% 
+%         robot.model.animate(qSol); % Animate the robot's motion
+%         drawnow;
+%     end
+% end
 function moveIRB1200(robot, trajectory, numSteps)
     % Move the UR3 robot along a given trajectory
     for i = 1:numSteps
         % Solve joint angles using inverse kinematics
-        qSol = robot.model.ikine(trajectory{i}, 'q0', zeros(1, 6));
+        qSol = robot.model.ikine(trajectory{i}, 'q0', zeros(1, 6), 'mask', [1 1 1 0 0 0]);
         
         robot.model.animate(qSol); % Animate the robot's motion
         drawnow;
     end
+    jointAngles = robot.model.getpos();
+    disp(jointAngles);
 end
+
 
 function trajectory = interpolatePoses(startPose, endPose, numSteps)
     % Interpolate between two joint configurations to generate a trajectory
@@ -94,3 +101,4 @@ function trajectory = interpolatePoses(startPose, endPose, numSteps)
         trajectory{i} = interpolatedPose;
     end
 end
+
