@@ -35,26 +35,26 @@ disp('Press ENTER to Start');
 pause;
 
 % Define a list of Cartesian poses to move to
-% posesDrink1 = {
-%     transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'deg');
-%     transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'deg');
-%     transl(0,0.45,0.6) * rpy2tr(0, 0, 0, 'deg');
-%     transl(0,0.45,0.6) * rpy2tr(0, 0, 0, 'deg');
-%     transl(0,0.45,0.6) * rpy2tr(0, 0, 0, 'deg');
-%     transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'deg');
-%     };
 posesDrink1 = {
-    transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'zyx');
-    transl(0.6, 0, 1) * rpy2tr(0, 0, 0, 'zyx');
-    transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'zyx');
-    transl(0,0.45,0.55) * rpy2tr(0, 0, 0, 'zyx');
-    % transl(0,0.45,0.6) * rpy2tr(0, 0, 0, 'zyx');
-    transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'zyx');
+    transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'deg');
+    transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'deg');
+    transl(0,0.55,0.6) * rpy2tr(0, 0, 0, 'deg');
+    transl(0,0.45,0.6) * rpy2tr(0, 0, 0, 'deg');
+    transl(0,0.45,0.6) * rpy2tr(0, 0, 0, 'deg');
+    transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'deg');
     };
+% posesDrink1 = {
+%     transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'zyx');
+%     % transl(0.6, 0, 1) * rpy2tr(0, 0, 0, 'zyx');
+%     % transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'zyx');
+%     transl(0,0.5,0.55) * rpy2tr(0, -pi/2, -pi/2, 'zyx');
+%     % transl(0,0.45,0.6) * rpy2tr(0, 0, 0, 'zyx');
+%     transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'zyx');
+%     };
 
 initial_pose = transl(0.5330, 0, 1.3911) * rpy2tr(0, 0, 0, 'deg');
 
-num_steps = 10;
+num_steps = 50;
 
 for i = 1:(length(posesDrink1) - 1)
         trajectory = interpolatePoses(initial_pose, posesDrink1{i+1}, num_steps);
@@ -63,31 +63,21 @@ for i = 1:(length(posesDrink1) - 1)
 
         % Display joint values
         disp(['Joint angles at pose ', num2str(i), ':']);
+        jointAngles = IRB1200.model.getpos();
+        disp(jointAngles);
 end
 
 disp(['DONE']);
 
-% function moveIRB1200(robot, trajectory, numSteps)
-%     % Move the UR3 robot along a given trajectory
-%     for i = 1:numSteps
-%         % Solve joint angles using inverse kinematics
-%         qSol = robot.model.ikine(trajectory{i}, 'q0', zeros(1, 6), 'mask', [1 1 1 0 0 0]);
-% 
-%         robot.model.animate(qSol); % Animate the robot's motion
-%         drawnow;
-%     end
-% end
 function moveIRB1200(robot, trajectory, numSteps)
     % Move the UR3 robot along a given trajectory
     for i = 1:numSteps
         % Solve joint angles using inverse kinematics
-        qSol = robot.model.ikine(trajectory{i}, 'q0', zeros(1, 6), 'mask', [1 1 1 0 0 0]);
+        qSol = robot.model.ikine(trajectory{i}, 'q0', zeros(1, 6));
         
         robot.model.animate(qSol); % Animate the robot's motion
         drawnow;
     end
-    jointAngles = robot.model.getpos();
-    disp(jointAngles);
 end
 
 

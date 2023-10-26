@@ -1,27 +1,17 @@
 %% Sample Draft File
-% test
-% workspace = PlaceObject('Workspace.ply', [0,0,0]);
-% workspace = PlaceObject('Workspace_Simple.ply', [0,0,0]);
-% 
-% hold on;
-% 
-
-%define steps for movement of the robot
-steps = 100;
-
-%set up the workspace size
+% Set up the workspace size
 axis equal
 axis([-1 2 -2 2 0 2])
 hold on;
 
-%initialise LinearUR3 robot as variable r
+% Initialise System
 disp('Initialising...');
 workspace = PlaceObject(['bar.ply'], [0,0,0]);
 
-gin = PlaceObject('greenbottle.ply', [0,0.5,0.5]);
-vodka = PlaceObject('vodkabottle.ply', [-0.1,0.5,0.5]);
+gin = PlaceObject('greenbottle.ply', [0,0.6,0.5]);
+vodka = PlaceObject('vodkabottle.ply', [-0.1,0.55,0.5]);
 rum = PlaceObject('rumbottle.ply', [-0.2,0.5,0.5]);
-whiskey = PlaceObject('greenbottle.ply', [-0.3,0.5,0.5]);
+whiskey = PlaceObject('greenbottle.ply', [-0.3,0.45,0.5]);
 
 % add mixers 1 - 4
 % coke = PlaceObject('???.ply', [0,-0.5,0.5]);
@@ -33,41 +23,31 @@ whiskey = PlaceObject('greenbottle.ply', [-0.3,0.5,0.5]);
 robot = ABBIRB1200();
 
 robot.model.base = robot.model.base.T * transl(0,0,0.5);
+robot.model.animate(zeros(1, 6));
+drawnow;
 
-% dobot = LinearDobotMagician();
+dobot = LinearDobotMagician();
 
 disp('Press ENTER to Start');
 pause;
 
 % Define a list of joint configurations (poses) to move to
 targetJointPoses = [
-    0, 0, 0, 0, 0, 0; % start pose
-    0, 0, 0, 0, 0, 0;
-    
-    pi/2, pi/4, 0, 0, -pi/4, 0;
-    pi/2, pi/4, pi/4, 0, -pi/2, 0;
-    pi/2, pi/3, 0.51, pi/8, -pi/2, 0;
-    pi/2, pi/3, pi/7, pi/8, -pi/2, 0;
+    0, 0, 0, 0, 0, 0; % start pose 0
 
-    -pi/2, pi/4, pi/4, 0, 0, 0;
-    -pi/2, pi/6, pi/4, 0, 0, 0;
+    pi/2, pi/4, pi/4, 0, -pi/2, 0;
+    pi/2, pi/2.55, pi/9, 0, -pi/2, 0;
+
+    0, pi/2.55, pi/9, 0, -pi/2, 0;
+    0, pi/4, pi/4, 0, -pi/2, 0;
+
+    -pi/2, pi/4, pi/4, 0, -pi/2, 0;
+    -pi/2, pi/2.55, pi/9, 0, -pi/2, 0;
+
+    0, pi/2.55, pi/9, 0, -pi/2, 0;
+    0, pi/4, pi/4, 0, -pi/2, 0;
 ];
 
-% % Loop through each pose
-% for i = 1:size(poses, 1)
-%     % Get the current pose
-%     currentPose = poses(i, :);
-% 
-%     % Move the robot to the current pose
-%     robot.model.animate(currentPose);
-% 
-%     % Pause to observe the transformation
-%     pause(2); % You can adjust the pause duration as needed
-% 
-%     % Display the transformation matrix of the end effector
-%     disp(['Transformation Matrix for Pose ', num2str(i), ':']);
-%     disp(robot.model.fkine(currentPose).T);
-% end
 
 % testing Catesian stuff
 % targetJointPoses = [
@@ -79,6 +59,7 @@ targetJointPoses = [
 % Initialize the trajectory with the first pose
 trajectory = targetJointPoses(1, :);
 
+% Set number of steps
 numSteps = 50;
 
 % Initialize an empty cell array to store the trajectory
@@ -93,7 +74,7 @@ for i = 1:size(targetJointPoses, 1) - 1
     segmentTrajectory = interpolatePoses(startPose, endPose, numSteps);
 
     % Move the robot along the complete trajectory
-    moveDobot(robot, segmentTrajectory, numSteps);
+    moveIRB1200(robot, segmentTrajectory, numSteps);
 
     disp(['Transformation Matrix for Pose ', num2str(i), ':']);
     disp(robot.model.fkine(endPose).T);
@@ -110,7 +91,7 @@ function moveDobot(robot, trajectory, numSteps)
         endEffectorPose = robot.model.fkine(trajectory{i});
 
         % Solve joint angles using inverse kinematics
-        qSol = robot.model.ikine(endEffectorPose, 'q0', zeros(1, 6), 'mask', [1 1 1 1 1 1]);
+        qSol = robot.model.ikine(endEffectorPose, 'q0', zeros(1, 6));
 
         robot.model.animate(qSol); % Animate the robot's motion
         drawnow;
@@ -120,8 +101,11 @@ end
 function moveIRB1200(robot, trajectory, numSteps)
     % Move the UR3 robot along a given trajectory
     for i = 1:numSteps
+        % Calculate the end-effector transformation using forward kinematics
+        endEffectorPose = robot.model.fkine(trajectory{i});
+
         % Solve joint angles using inverse kinematics
-        qSol = robot.model.ikine(trajectory{i}, 'q0', zeros(1, 6));
+        qSol = robot.model.ikine(endEffectorPose, 'q0', zeros(1, 6));
         
         robot.model.animate(qSol); % Animate the robot's motion
         drawnow;
