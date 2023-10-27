@@ -54,42 +54,43 @@ pause;
 
 % Define a list of joint configurations (poses) to move to
 poses = [
-    0, 0, pi/4, pi/4, pi/2, 0; % start pose
-    0, 0, pi/4, pi/4, pi/2, 0;
-    0, pi, pi/4, pi/4, pi/2, 0;
-    0, 0, pi/4, pi/4, pi/2, 0;
+    -0.5, 0, 0, 0, 0, 0;
+    -0.8, 0, 0, 0, 0, 0;
+    -0.6, 0, 0, 0, 0, 0;
+    -0.4, 0, 0, 0, 0, 0;
+    % -0.05, 0, , pi/4, pi/2, 0; % start pose
+    % -0.8, 0, pi/4, pi/4, pi/2, 0;
+    % -0.4, 0, pi/4, pi/4, pi/2, 0;
+    % -0.5, 0, pi/4, pi/4, pi/2, 0;
 ];
 
-% Loop through each pose
-for i = 1:size(poses, 1)
-    % Get the current pose
-    currentPose = poses(i, :);
-
-    % Move the robot to the current pose
-    dobot.model.animate(currentPose);
-
-    % Pause to observe the transformation
-    pause(2); % You can adjust the pause duration as needed
-
-    % Display the transformation matrix of the end effector
-    disp(['Transformation Matrix for Pose ', num2str(i), ':']);
-    disp(dobot.model.fkine(currentPose).T);
-end
-
-initial_pose = transl(0.5406, -0.4, 1.0807) * rpy2tr(0, 0, 0, 'deg');
+% initial_pose = transl(0.5406, -0.4, 1.0807) * rpy2tr(0, 0, 0, 'deg');
 
 num_steps = 50;
 
-for i = 1:(length(posesDrink1) - 1)
-        trajectory = interpolatePoses(initial_pose, DOBOTMOVE{i+1}, num_steps);
-        moveDOBOT(dobot, trajectory, num_steps);
-        initial_pose = DOBOTMOVE{i+1}; % Update the initial pose for the next step
+for i = 1:size(poses, 1) - 1
+    startPose = poses(i, :);
+    endPose = poses(i + 1, :);
 
-        % Display joint values
-        disp(['Joint angles at pose ', num2str(i), ':']);
-        jointAngles = dobot.model.getpos();
-        disp(jointAngles);
+    % Interpolate poses to create a smooth trajectory segment
+    segmentTrajectory = interpolatePoses(startPose, endPose, num_steps);
+
+    % Move the robot along the complete trajectory
+    moveDobot(dobot, segmentTrajectory, num_steps);
+
+    startPose = poses(i+1);
 end
+
+% for i = 1:(length(poses) - 1)
+%         trajectory = interpolatePoses(initial_pose, poses{i+1}, num_steps);
+%         moveDobot(dobot, trajectory, num_steps);
+%         initial_pose = poses{i+1}; % Update the initial pose for the next step
+% 
+%         % Display joint values
+%         disp(['Joint angles at pose ', num2str(i), ':']);
+%         jointAngles = dobot.model.getpos();
+%         disp(jointAngles);
+% end
 
 disp(['DONE']);
 
@@ -104,17 +105,19 @@ function moveIRB1200(robot, trajectory, numSteps)
     end
 end
 
-function moveDOBOT(robot, trajectory, numSteps)
-    % Move the UR3 robot along a given trajectory
+function moveDobot(robot, trajectory, numSteps)
+    % Move the Dobot Magician robot along a given trajectory
     for i = 1:numSteps
+        % Calculate the end-effector transformation using forward kinematics
+        endEffectorPose = robot.model.fkine(trajectory{i});
+
         % Solve joint angles using inverse kinematics
-        qSol = robot.model.ikine(trajectory{i}, 'q0', zeros(1, 6), 'mask', [1 1 1 0 0 0]);
-        
+        qSol = robot.model.ikine(endEffectorPose, 'q0', zeros(1, 6));
+
         robot.model.animate(qSol); % Animate the robot's motion
         drawnow;
     end
 end
-
 function trajectory = interpolatePoses(startPose, endPose, numSteps)
     % Interpolate between two joint configurations to generate a trajectory
     trajectory = cell(1, numSteps);
