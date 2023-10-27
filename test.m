@@ -33,13 +33,13 @@ disp('Press ENTER to Start');
 pause;
 
 % Definition of Drinks Poses in reference to ABB IRB 1200 joints
-%
+% Gin
 aboveBottle1 = [pi/2.2, pi/4, pi/4, 0, -pi/2, -pi/2];    % above bottle 1
 Bottle1 = [pi/2.2, pi/2.55, pi/9, 0, -pi/2, -pi/2]; % bottle 1 offset
-
+% Vokda
 aboveBottle2 = [pi/2, pi/4, pi/4, 0, -pi/2, -pi/2];    % above bottle 2
 Bottle2 = [pi/2, pi/2.55, pi/9, 0, -pi/2, -pi/2]; % bottle 2 offset
-
+% Whiskey
 aboveBottle3 = [pi/1.8, pi/4, pi/4, 0, -pi/2, -pi/2];    % above bottle 3
 Bottle3 = [pi/1.8, pi/2.55, pi/9, 0, -pi/2, -pi/2]; % bottle 3 offset
 % Coke
