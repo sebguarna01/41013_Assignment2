@@ -408,7 +408,7 @@ function moveDobot(robot, trajectory, numSteps)
     end
 end
 
-function moveIRB1200(robot, trajectory, numSteps, gripperL, gripperR)
+function moveIRB1200(robot, trajectory, numSteps, gripperR, gripperL)
     % Move the UR3 robot along a given trajectory
     for i = 1:numSteps
         % Calculate the end-effector transformation using forward kinematics

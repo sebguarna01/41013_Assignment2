@@ -23,11 +23,11 @@ whiskey = PlaceObject('greenbottle.ply', [-0.3,0.5,0.5]);
 % number4 = PlaceObject('???.ply', [-0.3,-0.5,0.5]);
 
 % Create an ABB IRB 120 model
-% IRB1200 = ABBIRB1200();
-% 
-% IRB1200.model.base = IRB1200.model.base.T * transl(0,0,0.5);
-% IRB1200.model.animate(zeros(1, 6));
-% drawnow;
+IRB1200 = ABBIRB1200();
+
+IRB1200.model.base = IRB1200.model.base.T * transl(-0.3,0,0.5);
+IRB1200.model.animate(zeros(1, 6));
+drawnow;
 
 dobot = LinearDobotMagician();
 
@@ -54,10 +54,13 @@ pause;
 
 % Define a list of joint configurations (poses) to move to
 poses = [
-    -0.5, 0, 0, 0, 0, 0;
-    -0.8, 0, 0, 0, 0, 0;
-    -0.6, 0, 0, 0, 0, 0;
-    -0.4, 0, 0, 0, 0, 0;
+    -0.01, 0, 0, 0, 0, 0;
+    -0.01, -pi/2, 0, 0, 0, 0;
+    -0.01, pi/2, 0, 0, 0, 0;
+    -0.4, pi/2, 0, 0, 0, 0;
+    -0.01, pi/2, 0, 0, 0, 0;
+    -0.8, pi/2, 0, 0, 0, 0;
+    -0.4, pi/2, 0, 0, 0, 0;
     % -0.05, 0, , pi/4, pi/2, 0; % start pose
     % -0.8, 0, pi/4, pi/4, pi/2, 0;
     % -0.4, 0, pi/4, pi/4, pi/2, 0;

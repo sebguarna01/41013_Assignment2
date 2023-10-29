@@ -23,7 +23,7 @@ function self = LinearDobotMagician(baseTr)
 				baseTr = eye(4);				
              end
              
-           self.model.base =  transl(0.4,0.3,0.5) *trotx(pi/2) * troty(pi/2);
+           self.model.base =  transl(0.5,-0.4,0.5) * trotz(-pi/2) * trotx(pi/2) * troty(pi/2);
    
 %             if nargin == 1			
 % 				self.model.base = self.model.base.T * baseTr;
@@ -36,7 +36,7 @@ function self = LinearDobotMagician(baseTr)
 %% CreateModel
         function CreateModel(self)       
             link(1) = Link([pi     0       0       pi/2    1]); % PRISMATIC Link
-            link(2) = Link('d',0.103+0.0362,    'a',0,      'alpha',-pi/2,  'offset',0, 'qlim',[deg2rad(-135),deg2rad(135)]);
+            link(2) = Link('d',0.103+0.0362,    'a',0,      'alpha',-pi/2,  'offset',pi/2, 'qlim',[deg2rad(-135),deg2rad(135)]);
             link(3) = Link('d',0,        'a',0.135,  'alpha',0,      'offset',-pi/4, 'qlim',[deg2rad(5),deg2rad(80)]);
             link(4) = Link('d',0,        'a',0.147,  'alpha',0,      'offset',pi/2, 'qlim',[deg2rad(-5),deg2rad(85)]);
             link(5) = Link('d',0,        'a',0.06,      'alpha',pi/2,  'offset',-pi/4, 'qlim',[deg2rad(-180),deg2rad(180)]);
