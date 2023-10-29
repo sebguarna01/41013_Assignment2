@@ -11,25 +11,32 @@ hold on;
 disp('Initialising...');
 workspace = PlaceObject(['bar.ply'], [0,0,0]);
 
-gin = PlaceObject('greenbottle.ply', [0,0.5,0.5]);
-vodka = PlaceObject('vodkabottle.ply', [-0.1,0.5,0.5]);
-rum = PlaceObject('rumbottle.ply', [-0.2,0.5,0.5]);
-whiskey = PlaceObject('greenbottle.ply', [-0.3,0.5,0.5]);
+% add alcohol 1 - 4
+gin = PlaceObject('greenbottle.ply', [-0.3146, 0.5939,0.5]);
+vodka = PlaceObject('vodkabottle.ply', [-0.4,0.6,0.5]);
+whiskey = PlaceObject('greenbottle.ply', [-0.5042,0.5909,0.5]);
+% rum = PlaceObject('rumbottle.ply', [-0.2296,0.5543,0.5]);
 
-% add mixers 1 - 4
-% coke = PlaceObject('???.ply', [0,-0.5,0.5]);
-% lemonade? = PlaceObject('???.ply', [-0.1,-0.5,0.5]);
-% orangeJuice = PlaceObject('???.ply', [-0.2,-0.5,0.5]);
-% number4 = PlaceObject('???.ply', [-0.3,-0.5,0.5]);
+% add mixers 1 - 3
+coke = PlaceObject('greenbottle.ply', [-0.3146, -0.5939,0.5]);
+lemonade = PlaceObject('greenbottle.ply', [-0.4,-0.6,0.5]);
+orangeJuice = PlaceObject('greenbottle.ply', [-0.5042,-0.5909,0.5]);
+% number4 = PlaceObject('greenbottle.ply', [-0.2296,-0.5543,0.5]);
 
 % Create an ABB IRB 120 model
 IRB1200 = ABBIRB1200();
-
-IRB1200.model.base = IRB1200.model.base.T * transl(-0.3,0,0.5);
+IRB1200.model.base = IRB1200.model.base.T * transl(-0.4,0,0.5);
 IRB1200.model.animate(zeros(1, 6));
 drawnow;
 
-dobot = LinearDobotMagician();
+gripperOrigin = IRB1200.model.fkine(IRB1200.model.getpos());
+gripperL = Gripper(gripperOrigin.T * trotx(pi/2));
+gripperR = Gripper(gripperOrigin.T *trotx(-pi/2) * trotz(pi));
+
+% Create DoBot Magician (mounted on Linear Rail) model
+DOBOT = LinearDobotMagician();
+segmentTrajectory = interpolatePoses([-0.01, 0, 0, 0, 0, 0], [-0.4, -pi/2, 0, 0, 0, 0], 50);
+moveDobot(DOBOT, segmentTrajectory, 50);
 
 disp('Press ENTER to Start');
 pause;
@@ -54,11 +61,19 @@ pause;
 
 % Define a list of joint configurations (poses) to move to
 poses = [
-    -0.01, 0, 0, 0, 0, 0;
+    -0.4, -pi/2, 0, 0, 0, 0 
     -0.01, -pi/2, 0, 0, 0, 0;
+    % -0.01, 0, 0, 0, 0, 0;
     -0.01, pi/2, 0, 0, 0, 0;
     -0.4, pi/2, 0, 0, 0, 0;
     -0.01, pi/2, 0, 0, 0, 0;
+    -0.8, pi/2, 0, 0, 0, 0;
+    -0.4, pi/2, 0, 0, 0, 0;
+    -0.01, pi/2, 0, 0, 0, 0;
+    -0.01, -pi/2, 0, 0, 0, 0 
+    -0.4, -pi/2, 0, 0, 0, 0;
+    -0.01, -pi/2, 0, 0, 0, 0;
+    -0.01, pi/2, 0, 0, 0, 0 
     -0.8, pi/2, 0, 0, 0, 0;
     -0.4, pi/2, 0, 0, 0, 0;
     % -0.05, 0, , pi/4, pi/2, 0; % start pose
@@ -69,7 +84,7 @@ poses = [
 
 % initial_pose = transl(0.5406, -0.4, 1.0807) * rpy2tr(0, 0, 0, 'deg');
 
-num_steps = 50;
+num_steps = 25;
 
 for i = 1:size(poses, 1) - 1
     startPose = poses(i, :);
@@ -79,7 +94,7 @@ for i = 1:size(poses, 1) - 1
     segmentTrajectory = interpolatePoses(startPose, endPose, num_steps);
 
     % Move the robot along the complete trajectory
-    moveDobot(dobot, segmentTrajectory, num_steps);
+    moveDobot(DOBOT, segmentTrajectory, num_steps);
 
     startPose = poses(i+1);
 end
