@@ -4,10 +4,14 @@ axis equal
 axis([-1 2 -2 2 0 2])
 hold on;
 
+% Set number of steps
+numSteps = 50;
+
 %% Initialising System
 disp('Initialising...');
 workspace = PlaceObject(['bar.ply'], [0,0,0]);
-
+% Set number of steps
+numSteps = 50;
 % % add alcohol 1 - 4
 % gin = PlaceObject('greenbottle.ply', [0.0854, 0.5939,0.5]);
 % vodka = PlaceObject('vodkabottle.ply', [0,0.6,0.5]);
@@ -21,15 +25,46 @@ workspace = PlaceObject(['bar.ply'], [0,0,0]);
 % % number4 = PlaceObject('greenbottle.ply', [-0.2296,-0.5543,0.5]);
 
 % add alcohol 1 - 4
-gin = PlaceObject('greenbottle.ply', [-0.3146, 0.5939,0.5]);
-vodka = PlaceObject('vodkabottle.ply', [-0.4,0.6,0.5]);
-whiskey = PlaceObject('greenbottle.ply', [-0.5042,0.5909,0.5]);
+
+gin=PlaceObject('greenbottle.ply', [0 0 0]);
+gin_vertices=get(gin,'Vertices');
+gintr=transl(-0.3146, 0.5939,0.5);
+transformedVertices=[gin_vertices,ones(size(gin_vertices,1),1)]*gintr';
+set(gin,'Vertices',transformedVertices(:,1:3));
+
+vodka=PlaceObject('vodkabottle.ply', [0 0 0]);
+vodka_vertices=get(vodka,'Vertices');
+vodkatr=transl(-0.4,0.6,0.5);
+transformedVertices=[vodka_vertices,ones(size(vodka_vertices,1),1)]*vodkatr';
+set(vodka,'Vertices',transformedVertices(:,1:3));
+
+whiskey=PlaceObject('rumbottle.ply', [0 0 0]);
+whiskey_vertices=get(whiskey,'Vertices');
+whiskeytr=transl(-0.5042,0.5909,0.5);
+transformedVertices=[whiskey_vertices,ones(size(whiskey_vertices,1),1)]*whiskeytr';
+set(whiskey,'Vertices',transformedVertices(:,1:3));
+
 % rum = PlaceObject('rumbottle.ply', [-0.2296,0.5543,0.5]);
 
 % add mixers 1 - 3
-coke = PlaceObject('greenbottle.ply', [-0.3146, -0.5939,0.5]);
-lemonade = PlaceObject('greenbottle.ply', [-0.4,-0.6,0.5]);
-orangeJuice = PlaceObject('greenbottle.ply', [-0.5042,-0.5909,0.5]);
+coke=PlaceObject('greenbottle.ply', [0 0 0]);
+coke_vertices=get(coke,'Vertices');
+coketr=transl(-0.3146, -0.5939,0.5);
+transformedVertices=[coke_vertices,ones(size(coke_vertices,1),1)]*coketr';
+set(coke,'Vertices',transformedVertices(:,1:3));
+
+lemonade=PlaceObject('greenbottle.ply', [0 0 0]);
+lemonade_vertices=get(lemonade,'Vertices');
+lemonadetr=transl(-0.4,-0.6,0.5);
+transformedVertices=[lemonade_vertices,ones(size(lemonade_vertices,1),1)]*lemonadetr';
+set(lemonade,'Vertices',transformedVertices(:,1:3));
+
+orangeJuice=PlaceObject('greenbottle.ply', [0 0 0]);
+orangeJuice_vertices=get(orangeJuice,'Vertices');
+orangeJuicetr=transl(-0.5042,-0.5909,0.5);
+transformedVertices=[orangeJuice_vertices,ones(size(orangeJuice_vertices,1),1)]*orangeJuicetr';
+set(orangeJuice,'Vertices',transformedVertices(:,1:3));
+
 % number4 = PlaceObject('greenbottle.ply', [-0.2296,-0.5543,0.5]);
 
 % Create an ABB IRB 120 model
@@ -38,9 +73,18 @@ IRB1200.model.base = IRB1200.model.base.T * transl(-0.4,0,0.5);
 IRB1200.model.animate(zeros(1, 6));
 drawnow;
 
+%Setup Gripper
 gripperOrigin = IRB1200.model.fkine(IRB1200.model.getpos());
 gripperL = Gripper(gripperOrigin.T * trotx(pi/2));
 gripperR = Gripper(gripperOrigin.T *trotx(-pi/2) * trotz(pi));
+
+%gripper movement q values for opening gripper and closing the gripper
+Open = [deg2rad(0) deg2rad(0) deg2rad(0)];
+Close = [deg2rad(5) deg2rad(0) deg2rad(-5)];
+%open gripper movement matrix
+qMatrixOpen = jtraj(Close,Open,numSteps);
+%close gripper movement matrix
+qMatrixClose = jtraj(Open,Close,numSteps);
 
 % Create DoBot Magician (mounted on Linear Rail) model
 DOBOT = LinearDobotMagician();
@@ -73,11 +117,11 @@ Mixer3 = [-pi/1.8, pi/2.55, pi/9, 0, -pi/2, -pi/2]; % mixer 3 offset
 
 %% Run drink Making functions 
 
-makeVodkaLemonade(IRB1200, aboveBottle2, Bottle2, aboveMixer2, Mixer2, gripperR, gripperL);
+makeVodkaLemonade(IRB1200, aboveBottle2, Bottle2, aboveMixer2, Mixer2, gripperR, gripperL,numSteps);
 pause(2);
-makeWhiskeyANDCoke(IRB1200, aboveBottle3, Bottle3, aboveMixer1, Mixer1, gripperR, gripperL);
+makeWhiskeyANDCoke(IRB1200, aboveBottle3, Bottle3, aboveMixer1, Mixer1, gripperR, gripperL,numSteps);
 pause(2);
-makeVodkaOJ(IRB1200, aboveBottle2, Bottle2, aboveMixer3, Mixer3, gripperR, gripperL);
+makeVodkaOJ(IRB1200, aboveBottle2, Bottle2, aboveMixer3, Mixer3, gripperR, gripperL,numSteps);
 pause(2);
 
 % OR
@@ -144,7 +188,7 @@ pause(2);
 %     disp(['DONE.']);
 % end
 
-function makeVodkaLemonade(IRB1200, aboveVodka, Vodka, aboveLemonade, Lemonade, gripperR, gripperL)
+function makeVodkaLemonade(IRB1200, aboveVodka, Vodka, aboveLemonade, Lemonade, gripperR, gripperL,numSteps)
     disp(['Making Vodka Lemonade...'])
     posesVodkaLemonade = [
         0, 0, 0, 0, 0, 0; % start pose 0
@@ -181,8 +225,6 @@ function makeVodkaLemonade(IRB1200, aboveVodka, Vodka, aboveLemonade, Lemonade, 
     % Initialize the trajectory with the first pose
     trajectory = posesVodkaLemonade(1, :);
     
-    % Set number of steps
-    numSteps = 50;
     
     % Generate trajectory for each pair of consecutive poses
     for i = 1:size(posesVodkaLemonade, 1) - 1
@@ -201,7 +243,7 @@ function makeVodkaLemonade(IRB1200, aboveVodka, Vodka, aboveLemonade, Lemonade, 
     disp(['DONE.']);
 end
 
-function makeWhiskeyANDCoke(IRB1200, aboveWhiskey, Whiskey, aboveCoke, Coke, gripperR, gripperL)
+function makeWhiskeyANDCoke(IRB1200, aboveWhiskey, Whiskey, aboveCoke, Coke, gripperR, gripperL,numSteps)
     disp(['Making Whiskey and Coke...'])
     posesWhiskeyANDCoke = [
         0, 0, 0, 0, 0, 0; % start pose 0
@@ -238,9 +280,6 @@ function makeWhiskeyANDCoke(IRB1200, aboveWhiskey, Whiskey, aboveCoke, Coke, gri
     % Initialize the trajectory with the first pose
     trajectory = posesWhiskeyANDCoke(1, :);
     
-    % Set number of steps
-    numSteps = 50;
-    
     % Generate trajectory for each pair of consecutive poses
     for i = 1:size(posesWhiskeyANDCoke, 1) - 1
         startPose = posesWhiskeyANDCoke(i, :);
@@ -258,7 +297,7 @@ function makeWhiskeyANDCoke(IRB1200, aboveWhiskey, Whiskey, aboveCoke, Coke, gri
     disp(['DONE.']);
 end
 
-function makeVodkaOJ(IRB1200, aboveVodka, Vodka, aboveOrangeJuice, OrangeJuice, gripperR, gripperL)
+function makeVodkaOJ(IRB1200, aboveVodka, Vodka, aboveOrangeJuice, OrangeJuice, gripperR, gripperL,numSteps)
     disp(['Making Screwdriver...'])
     posesVodkaOJ = [
         0, 0, 0, 0, 0, 0; % start pose 0
@@ -294,9 +333,6 @@ function makeVodkaOJ(IRB1200, aboveVodka, Vodka, aboveOrangeJuice, OrangeJuice, 
     
     % Initialize the trajectory with the first pose
     trajectory = posesVodkaOJ(1, :);
-    
-    % Set number of steps
-    numSteps = 50;
     
     % Generate trajectory for each pair of consecutive poses
     for i = 1:size(posesVodkaOJ, 1) - 1
@@ -354,19 +390,37 @@ function moveIRB1200(robot, trajectory, numSteps, gripperR, gripperL)
         % Solve joint angles using inverse kinematics
         qSol = robot.model.ikine(endEffectorPose, 'q0', zeros(1, 6));
         
-        % Adjust the location of the R and L gripper to the updated end effector pose
-        gripperR.model.base = robot.model.fkine(trajectory{i}).T * trotx(-pi/2) * trotz(pi); 
-        gripperL.model.base = robot.model.fkine(trajectory{i}).T * trotx(pi/2);
-        
         % Animate the robot's motion
         robot.model.animate(qSol); 
+
+        % Adjust the location of the R and L gripper to the updated end effector pose
+        gripperR.model.base = robot.model.fkine(robot.model.getpos).T * trotx(-pi/2) * trotz(pi); 
+        gripperL.model.base = robot.model.fkine(robot.model.getpos).T * trotx(pi/2);
         
         % Animate the change of position for gripper
-        gripperR.model.animate(trajectory{i});
-        gripperL.model.animate(trajectory{i});
+        gripperR.model.animate(gripperR.model.getpos);
+        gripperL.model.animate(gripperL.model.getpos);
         
         drawnow;
     end
+end
+
+function closeGripper(gripperR,gripperL)
+        pause(0.5)
+        %close gripper R and L
+        display('Closing Gripper...');
+        gripperR.model.animate(qMatrixClose);
+        gripperL.model.animate(qMatrixClose);
+        pause(0.5)
+end
+
+function openGripper(gripperR,gripperL)
+        pause(0.5)
+        %open gripper R and L
+        display('Open Gripper...');
+        gripperR.model.animate(qMatrixOpen);
+        gripperL.model.animate(qMatrixOpen);
+        pause(0.5)
 end
 
 function trajectory = interpolatePoses(startPose, endPose, numSteps)
