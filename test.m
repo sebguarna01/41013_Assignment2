@@ -12,6 +12,7 @@ disp('Initialising...');
 workspace = PlaceObject(['bar.ply'], [0,0,0]);
 % Set number of steps
 numSteps = 50;
+
 % % add alcohol 1 - 4
 % gin = PlaceObject('greenbottle.ply', [0.0854, 0.5939,0.5]);
 % vodka = PlaceObject('vodkabottle.ply', [0,0.6,0.5]);
@@ -25,7 +26,6 @@ numSteps = 50;
 % % number4 = PlaceObject('greenbottle.ply', [-0.2296,-0.5543,0.5]);
 
 % add alcohol 1 - 4
-
 gin=PlaceObject('greenbottle.ply', [0 0 0]);
 gin_vertices=get(gin,'Vertices');
 gintr=transl(-0.3146, 0.5939,0.5);
