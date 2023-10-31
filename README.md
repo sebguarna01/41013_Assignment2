@@ -24,6 +24,14 @@ This sections runs through the project prerequisites:
 * MATLAB
 * ROS
 
+### Necessary Installations
+
+**a) Latest Version of MATLAB**
+
+**b) Native Linux**
+
+**c) DoBot Magician Driver**
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTRIBUTORS -->
