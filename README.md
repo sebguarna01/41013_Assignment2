@@ -28,7 +28,7 @@ This sections runs through the project prerequisites:
 
 <!-- CONTRIBUTORS -->
 ## Contributors: Group 50
-... - Arthur Baron von Wilcke - Arthur.BaronvonWilcke@student.uts.edu.au
+24858058 - Arthur Baron von Wilcke - Arthur.BaronvonWilcke@student.uts.edu.au
 
 13868233 - Britney Malone - Britney.A.Malone@student.uts.edu.au
 
