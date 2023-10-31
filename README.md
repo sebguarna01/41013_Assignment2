@@ -2,7 +2,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-Project Link: https://github.com/sebguarna01/41014_GroupProject
+Project Link: https://github.com/sebguarna01/41013_Assignment2
 
 **Task:** "SafeCo wants you to consider a plausible application for a pick-and-place robot that has a gripper" (Paul, 2023).
 
