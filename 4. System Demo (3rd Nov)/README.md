@@ -39,6 +39,6 @@ The System Demonstration documentation is available on GitHub at the following l
 
 <!-- CONTRIBUTIONS -->
 ## Contributions:
-The project team collaborated on the Project Demo Video tasks equally. We made sure to communicate project needs and distribute tasks equally and fairly.
+The project team collaborated on the Project Demonstration tasks equally. We made sure to communicate project needs and distribute tasks equally and fairly.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
