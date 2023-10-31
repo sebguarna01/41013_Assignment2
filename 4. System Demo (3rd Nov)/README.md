@@ -26,6 +26,10 @@ Demonstration of the new robot with an existing robot completing a specified tas
   
 (d) Design a simulated environment with a strategically placed models of appropriate safety equipment (1)
 
+#### Bonus (+4)
+(1)  Up to 2 bonus marks for incorporating additional hardware in your System Demonstration: e.g. for safety, collision detection, an end-effector.
+
+(2) Up to 2 bonus marks for having the system (real or simulated) react to real RGB-D sensor data in your System Demonstration. Require a combination of calibration, mapping, object recognition, image processing.
 
 ### Submission Content:
 The System Demonstration folder provides the following:
