@@ -1,4 +1,6 @@
 # SafeCo: Pick-and-Place Robot
+<img width="911" alt="MicrosoftTeams-image" src="https://github.com/sebguarna01/41013_Assignment2/assets/55471488/b0498187-f774-4397-99dc-63504aa6dbfd">
+
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
