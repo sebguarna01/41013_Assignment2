@@ -25,6 +25,11 @@ The video covers the following project aspects:
 * Current System Demonstration
 * Applications
 
+https://github.com/sebguarna01/41013_Assignment2/assets/55471488/06fe8fa6-dc09-4ac4-a335-c3bf38a4f896
+
+## Project Promo
+https://github.com/sebguarna01/41013_Assignment2/assets/55471488/952198ab-59e6-4f8a-86d5-d78a13fe23b0
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
