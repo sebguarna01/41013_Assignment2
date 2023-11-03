@@ -6,7 +6,7 @@ Project Link: https://github.com/sebguarna01/41013_Assignment2
 
 **Task:** "SafeCo wants you to consider a plausible application for a pick-and-place robot that has a gripper" (Paul, 2023).
 
-The team will embark on a project to expand SafeCo’s product range and customer base. The project team has decided to delve into a project that looks at a robotic bar system's design, application and safety integrations. This RoboBAR will have multiple applications, from hospitality to luxury homeowners looking to upgrade their homes with futuristic appliances, events and more. This RoboBAR will involve two robotic arms working simultaneously: a Linear UR3 Dobot and a GoFa 5. The GoFa is proposed to make the drinks, and the Dobot will give the made drink to the consumer. 
+The team will embark on a project to expand SafeCo’s product range and customer base. The project team has decided to delve into a project that looks at a robotic bar system's design, application and safety integrations. This RoboBAR will have multiple applications, from hospitality to luxury homeowners looking to upgrade their homes with futuristic appliances, events and more. This RoboBAR will involve two robotic arms working simultaneously: a Linear Dobot Magician and an ABB IRB 1200. The IRB 1200 is proposed to make the drinks, and the Dobot will give the made drink to the consumer.
 
 ### Overview
 This submission contains the Project Demonstration documentation for the SafeCo: Pick-and-Place Robot Project by Group 50. 
